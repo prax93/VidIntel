@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A HTTP Backend Server to manage basic tasks on a Linux Server",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "npm test"
   },
