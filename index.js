@@ -1,31 +1,31 @@
 // server.mjs
 import { createServer } from 'node:http';
+import mediastat from './mediastat.js';
+
 
 const SERVER_PORT = process.env.SERVER_PORT
 
 const server = createServer(handler)
 
-
-function handler (req, res){
+async function handler (req, res){
     const requestUrl = req.url;
-
-    if (requestUrl === '/homeserver') {
+    if(requestUrl.includes('/media')){
+        const url = new URL(req.url, `http://${req.headers.host}`);
+        const params = Object.fromEntries(url.searchParams.entries());
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-
-        const jsonObject = {
-            'Server-adress': '192.168.0.100',
-            'Server-username': 'ubuntu'
+        try {
+            const data = await mediastat.readMediaInfos(process.env.MEDIA_LOCATION);
+            res.end(JSON.stringify(data));
+        } catch (err) {
+            console.error(err);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: 'Internal Server Error' }));
         }
-
-        res.end(JSON.stringify(jsonObject));
+        finally {
+            mediastat.clear()
+        }
     }
-    else {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'text/plain');
-        res.end(requestUrl.replace('/', '')); 
-    }
-
 }
 
 server.listen(SERVER_PORT, '127.0.0.1', () => {
