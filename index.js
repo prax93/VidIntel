@@ -29,5 +29,5 @@ async function handler (req, res){
 }
 
 server.listen(SERVER_PORT, '127.0.0.1', () => {
-  console.log('Listening on 127.0.0.1:' + SERVER_PORT);
+  console.info('Listening on 127.0.0.1:' + SERVER_PORT);
 });
