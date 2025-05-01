@@ -9,16 +9,22 @@ const videoExtensions = ['.mp4', '.mkv', '.avi', '.mov', '.flv', '.wmv'];
 
 export default {
     readMediaInfos,
-    clear
+    clear,
+    getVideoMetaData
 };
 
-function readMediaInfos(filePath) {
-        
-    fileExporter(filePath)
-    videoReader()
+async function readMediaInfos(filePath) {
+    try {
+        await fileExporter(filePath);
+        await videoReader();
+        return movies;
+    } catch (error) {
+        console.error('Error reading media infos:', error);
+        throw error;
+    }
 }
 
-function fileExporter(filePath) {
+async function fileExporter(filePath) {
     const files = fs.readdirSync(filePath, {recursive: true});
 
         files.forEach(file => {
@@ -33,27 +39,27 @@ function fileExporter(filePath) {
         });
 }
 
-function videoReader() {
-    videoFiles.forEach(videoPath => {
-        ffprobe(videoPath, { path: ffprobeStatic.path }, function (err, info) {
-            if (err) {
-                console.warn(err);
-            } else {
-                const mediaInfo = {
-                    "name": videoPath,
-                    "size": (fs.statSync(videoPath).size / 1024 / 1024 / 1024).toFixed(2),
-                    "resolution": info.streams.find(stream => stream.codec_type === 'video').width + "x" + info.streams.find(stream => stream.codec_type === 'video').height,
-                    "aspect-ratio": info.streams.find(stream => stream.codec_type === 'video').display_aspect_ratio,
-                    "codec": info.streams.find(stream => stream.codec_type === 'video').codec_long_name,
-                    "audio": [
-                        info.streams.filter(stream => stream.codec_type === 'audio')
-                    ]
-                };
-                movies.push(mediaInfo);
-            }
-        });
-    })
-    return movies
+async function videoReader() {
+    for (const videoPath of videoFiles) {
+        try {
+            const info = await ffprobe(videoPath, { path: ffprobeStatic.path });
+            const mediaInfo = {
+                "name": videoPath,
+                "size": (fs.statSync(videoPath).size / 1024 / 1024 / 1024).toFixed(2),
+                "resolution": info.streams.find(stream => stream.codec_type === 'video').width + "x" + info.streams.find(stream => stream.codec_type === 'video').height,
+                "aspect-ratio": info.streams.find(stream => stream.codec_type === 'video').display_aspect_ratio,
+                "codec": info.streams.find(stream => stream.codec_type === 'video').codec_long_name,
+                "audio": info.streams.filter(stream => stream.codec_type === 'audio')
+            };
+            movies.push(mediaInfo);
+        } catch (err) {
+            console.warn(err);
+        }
+    }
+}
+
+function getVideoMetaData() {
+    return movies;
 }
 
 function clear(){
