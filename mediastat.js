@@ -49,15 +49,15 @@ async function videoReader() {
                 "resolution": info.streams.find(stream => stream.codec_type === 'video').width + "x" + info.streams.find(stream => stream.codec_type === 'video').height,
                 "aspect-ratio": info.streams.find(stream => stream.codec_type === 'video').display_aspect_ratio,
                 "codec": info.streams.find(stream => stream.codec_type === 'video').codec_long_name,
-            "audio": info.streams
-                .filter(stream => stream.codec_type === 'audio')
-                .map(audio => ({
-                    "language": audio.tags.language,
-                    "channels": audio.channels,
-                    "channgels-layout": audio.channel_layout,
-                    "codec-name": audio.codec_name,
-                    "profile": audio.profile
-                }))
+                "audio": info.streams
+                    .filter(stream => stream.codec_type === 'audio')
+                    .map(audio => ({
+                        "language": audio.tags.language,
+                        "channels": audio.channels,
+                        "channgels-layout": audio.channel_layout,
+                        "codec-name": audio.codec_name,
+                        "profile": audio.profile
+                    }))
             };
             movies.push(mediaInfo);
         } catch (err) {
