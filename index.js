@@ -7,23 +7,33 @@ const SERVER_PORT = process.env.SERVER_PORT
 
 const server = createServer(handler)
 
-function handler (req, res){
+async function handler(req, res) {
     const requestUrl = req.url;
-    if(requestUrl.includes('/media')){
+
+    if (requestUrl.includes('/refresh')) {
         const url = new URL(req.url, `http://${req.headers.host}`);
-        // const params = Object.fromEntries(url.searchParams.entries());
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         try {
-            const data = mediastat.readMediaInfos(process.env.MEDIA_LOCATION);
-            res.end(JSON.stringify(data));
+            await mediastat.readMediaInfos(process.env.MEDIA_LOCATION);
+            res.end('Finished Sync');
         } catch (err) {
             console.error(err);
             res.statusCode = 500;
             res.end(JSON.stringify({ error: 'Internal Server Error' }));
         }
-        finally {
-            mediastat.clear()
+    }
+
+    else {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        try {
+            const data = mediastat.getVideoMetaData(); 
+            res.end(JSON.stringify(data));
+        } catch (err) {
+            console.error(err);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: 'Internal Server Error' }));
         }
     }
 }
