@@ -7,15 +7,15 @@ const SERVER_PORT = process.env.SERVER_PORT
 
 const server = createServer(handler)
 
-async function handler (req, res){
+function handler (req, res){
     const requestUrl = req.url;
     if(requestUrl.includes('/media')){
         const url = new URL(req.url, `http://${req.headers.host}`);
-        const params = Object.fromEntries(url.searchParams.entries());
+        // const params = Object.fromEntries(url.searchParams.entries());
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         try {
-            const data = await mediastat.readMediaInfos(process.env.MEDIA_LOCATION);
+            const data = mediastat.readMediaInfos(process.env.MEDIA_LOCATION);
             res.end(JSON.stringify(data));
         } catch (err) {
             console.error(err);
