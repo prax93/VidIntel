@@ -15,13 +15,18 @@ async function handler(req, res) {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         try {
-            console.log('started Sync !!')
-            res.end(JSON.stringify(
-                {"Status": "Check Synced Items",
+            console.log('started Sync !!');
+            res.write(JSON.stringify(
+                {"Status": "Sync in Progress",
                 "Redirect-url": `http://127.0.0.1:${SERVER_PORT}/status`}
-            ))
-            await mediastat.readMediaInfos(process.env.MEDIA_LOCATION);
-            console.log('Done !!!')
+            ));
+            res.end();
+            try {
+                await mediastat.readMediaInfos(process.env.MEDIA_LOCATION);
+                console.log('Done !!!');
+            } catch (err) {
+                console.error('Error during sync:', err);
+            }
         } catch (err) {
             console.error(err);
             res.statusCode = 500;
@@ -29,7 +34,7 @@ async function handler(req, res) {
         }
     }
 
-    else if(requestUrl.includes('/json')) {
+    else if(requestUrl.includes('/json') || requestUrl === '/') {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         try {
@@ -52,12 +57,14 @@ async function handler(req, res) {
     else if(requestUrl.includes('/status')) {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        try {
-            res.end(JSON.stringify(mediastat.getVideoMetaData()))
-        } catch (err) {
-            console.error(err);
-            res.statusCode = 500;
-            res.end(JSON.stringify({ error: 'Failed to read movies.json' }));
+        const data = mediastat.getVideoMetaData();
+        if(data.length == 0){
+        const response = {
+            "Status": "Sync not finished, please refresh at a later point"
+        }
+        res.end(JSON.stringify(response))}
+        else {
+            res.end(JSON.stringify(data))
         }
     }
 }
