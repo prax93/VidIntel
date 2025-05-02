@@ -13,11 +13,11 @@ export default {
     getVideoMetaData
 };
 
+// Feat: Activat Scheduler when env Variable is set
 async function readMediaInfos(filePath) {
     try {
         await fileExporter(filePath);
         await videoReader();
-        return movies;
     } 
     catch (error) {
         console.error('Error reading media infos:', error);
