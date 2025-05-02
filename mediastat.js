@@ -2,6 +2,7 @@ import ffprobe from 'ffprobe';
 import ffprobeStatic from 'ffprobe-static';
 import fs from 'node:fs';
 import path from 'node:path';
+import jsonCreator from './jsonCreator.js';
 
 let movies = []
 let videoFiles = [];
@@ -40,7 +41,7 @@ async function fileExporter(filePath) {
 }
 
 async function videoReader() {
-    for (const videoPath of videoFiles) {
+    await Promise.all(videoFiles.map(async (videoPath) => {
         try {
             const info = await ffprobe(videoPath, { path: ffprobeStatic.path });
             const mediaInfo = {
@@ -63,7 +64,8 @@ async function videoReader() {
         } catch (err) {
             console.warn(err);
         }
-    }
+    }));
+    jsonCreator.writer('./movies.json', JSON.stringify(movies));
 }
 
 function getVideoMetaData() {
