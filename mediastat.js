@@ -10,7 +10,6 @@ const videoExtensions = ['.mp4', '.mkv', '.avi', '.mov', '.flv', '.wmv'];
 
 export default {
     readMediaInfos,
-    clear,
     getVideoMetaData
 };
 
@@ -19,7 +18,8 @@ async function readMediaInfos(filePath) {
         await fileExporter(filePath);
         await videoReader();
         return movies;
-    } catch (error) {
+    } 
+    catch (error) {
         console.error('Error reading media infos:', error);
         throw error;
     }
@@ -27,17 +27,16 @@ async function readMediaInfos(filePath) {
 
 async function fileExporter(filePath) {
     const files = fs.readdirSync(filePath, {recursive: true});
-
-        files.forEach(file => {
-            const fullPath = path.join(filePath, file);
-            const fileStat = fs.statSync(fullPath);
-            if (fileStat.isFile() && videoExtensions.includes(path.extname(file).toLowerCase())) {
-                videoFiles.push(fullPath);
-            }
-            else {
-                console.info(`%s: is not a valid media file`, file)
-            }
-        });
+    files.forEach(file => {
+        const fullPath = path.join(filePath, file);
+        const fileStat = fs.statSync(fullPath);
+        if (fileStat.isFile() && videoExtensions.includes(path.extname(file).toLowerCase())) {
+            videoFiles.push(fullPath);
+        }
+        else {
+            console.info(`%s: is not a valid media file`, file)
+        }
+    });
 }
 
 async function videoReader() {
@@ -70,9 +69,4 @@ async function videoReader() {
 
 function getVideoMetaData() {
     return movies;
-}
-
-function clear(){
-    movies = []
-    videoFiles = []
 }
