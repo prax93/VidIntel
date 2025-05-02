@@ -53,7 +53,7 @@ async function videoReader() {
                 "audio": info.streams
                     .filter(stream => stream.codec_type === 'audio')
                     .map(audio => ({
-                        "language": audio.tags.language,
+                        "language": audio.tags.language? audio.tags.language : 'undefined',
                         "channels": audio.channels,
                         "channgels-layout": audio.channel_layout,
                         "codec-name": audio.codec_name,
