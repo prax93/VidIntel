@@ -1,6 +1,6 @@
-// server.mjs
 import { createServer } from 'node:http';
 import mediastat from './mediastat.js';
+import jsonCreator from './jsonCreator.js';
 
 
 const SERVER_PORT = process.env.SERVER_PORT
@@ -15,8 +15,13 @@ async function handler(req, res) {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         try {
+            console.log('started Sync !!')
+            res.end(JSON.stringify(
+                {"Status": "Check Synced Items",
+                "Redirect-url": `http://127.0.0.1:${SERVER_PORT}/status`}
+            ))
             await mediastat.readMediaInfos(process.env.MEDIA_LOCATION);
-            res.end('Finished Sync');
+            console.log('Done !!!')
         } catch (err) {
             console.error(err);
             res.statusCode = 500;
@@ -24,20 +29,39 @@ async function handler(req, res) {
         }
     }
 
-    else {
+    else if(requestUrl.includes('/json')) {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         try {
-            const data = mediastat.getVideoMetaData(); 
-            res.end(JSON.stringify(data));
+            jsonCreator.reader('./movies.json', (err, data) => {
+                if (err) {
+                    console.error(err);
+                    res.statusCode = 500;
+                    res.end(JSON.stringify({ error: 'Failed to read movies.json' }));
+                } else {
+                    res.end(data);
+                }
+            });
         } catch (err) {
             console.error(err);
             res.statusCode = 500;
-            res.end(JSON.stringify({ error: 'Internal Server Error' }));
+            res.end(JSON.stringify({ error: 'Failed to read movies.json' }));
+        }
+    }
+
+    else if(requestUrl.includes('/status')) {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        try {
+            res.end(JSON.stringify(mediastat.getVideoMetaData()))
+        } catch (err) {
+            console.error(err);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: 'Failed to read movies.json' }));
         }
     }
 }
 
 server.listen(SERVER_PORT, '127.0.0.1', () => {
-  console.info('Listening on 127.0.0.1:' + SERVER_PORT);
+  console.info('Listening on http://127.0.0.1:' + SERVER_PORT);
 });
