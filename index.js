@@ -8,7 +8,26 @@ const server = createServer(handler)
 async function handler(req, res) {
     const requestUrl = req.url;
 
-    if (requestUrl.includes('/refresh')) {
+    if (requestUrl ==='/') {
+    try {
+        jsonCreator.reader('./movies.json', (err, data) => {
+            if (err) {
+                console.error(err);
+                res.statusCode = 500;
+                res.end(JSON.stringify({ error: 'Failed to read movies.json' }));
+            } else {
+                const movies = JSON.parse(data);
+                res.end(JSON.stringify(movies));
+            }
+        });
+    } catch (err) {
+        console.error(err);
+        res.statusCode = 500;
+        res.end(JSON.stringify({ error: 'Failed to read movies.json' }));
+    }
+    }      
+
+    else if (requestUrl.includes('/refresh')) {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         try {
@@ -33,7 +52,11 @@ async function handler(req, res) {
         }
     }
 
-    else if(requestUrl.includes('/json') || requestUrl === '/') {
+    else if(requestUrl.includes('/json')) {
+        const current_url = new URL(req.url, `http://${req.headers.host}`);
+        const search_params = current_url.searchParams;
+        const search = search_params.get('search');
+
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         try {
@@ -43,13 +66,13 @@ async function handler(req, res) {
                     res.statusCode = 500;
                     res.end(JSON.stringify({ error: 'Failed to read movies.json' }));
                 } else {
-                    res.end(data);
+                    const movies = JSON.parse(data);
+                    const filteredMovies = search ? movies.filter((movie) => movie.name.toLowerCase().includes(search.toLowerCase())) : movies;
+                    res.end(JSON.stringify(filteredMovies));
                 }
             });
         } catch (err) {
             console.error(err);
-            res.statusCode = 500;
-            res.end(JSON.stringify({ error: 'Failed to read movies.json' }));
         }
     }
 
