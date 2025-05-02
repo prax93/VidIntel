@@ -2,28 +2,27 @@ import { createServer } from 'node:http';
 import mediastat from './mediastat.js';
 import jsonCreator from './jsonCreator.js';
 
-
 const SERVER_PORT = process.env.SERVER_PORT
-
 const server = createServer(handler)
 
 async function handler(req, res) {
     const requestUrl = req.url;
 
     if (requestUrl.includes('/refresh')) {
-        const url = new URL(req.url, `http://${req.headers.host}`);
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         try {
-            console.log('started Sync !!');
+            const logDate = new Date().toISOString();
+            console.info(`${logDate} Sync Started`);
             res.write(JSON.stringify(
                 {"Status": "Sync in Progress",
                 "Redirect-url": `http://127.0.0.1:${SERVER_PORT}/status`}
             ));
             res.end();
             try {
+                const logDate = new Date().toISOString();
                 await mediastat.readMediaInfos(process.env.MEDIA_LOCATION);
-                console.log('Done !!!');
+                console.info(`${logDate} Sync Finished sucessfully`);
             } catch (err) {
                 console.error('Error during sync:', err);
             }
@@ -59,10 +58,10 @@ async function handler(req, res) {
         res.setHeader('Content-Type', 'application/json');
         const data = mediastat.getVideoMetaData();
         if(data.length == 0){
-        const response = {
-            "Status": "Sync not finished, please refresh at a later point"
-        }
-        res.end(JSON.stringify(response))}
+            const response = {
+                "Status": "Sync not finished, please refresh at a later point"
+            }
+            res.end(JSON.stringify(response))}
         else {
             res.end(JSON.stringify(data))
         }
