@@ -2,3 +2,4 @@
 videos
 node_modules
 movies.json
+.DS_STORE
