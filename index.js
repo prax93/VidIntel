@@ -1,9 +1,16 @@
 import { createServer } from 'node:http';
 import mediastat from './mediastat.js';
 import jsonCreator from './jsonCreator.js';
+import cron from './cron.js'
 
 const SERVER_PORT = process.env.SERVER_PORT
+const CRON_ENABLED = process.env.CRON_ENABLED
 const server = createServer(handler)
+
+if(CRON_ENABLED === 'true'){
+    cron.cron(true, '00 13 * * *')
+}
+
 
 async function handler(req, res) {
     const requestUrl = req.url;
