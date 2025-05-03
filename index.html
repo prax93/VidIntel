@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <form action="get">
+        <input class="inputType" type="text">
+    </form>
+
+    <div class="content">
+
+    </div>
+
+    <script>
+        const inputs = document.querySelector(".inputType");
+
+        inputs.addEventListener('keydown', (event) => { 
+                console.log(event.target.value);
+                fetch(`http://localhost:3000/?search=${event.target.value}`, {
+                    method: 'GET'
+                })
+                .then(resp => { console.log(resp)
+                return resp.json()})
+                .then((data) => {
+                    document.querySelector('.content').innerHTML = ''
+                    console.log(data)
+                    console.log(data.length)
+                        data.forEach((movie) => {
+                            const view = document.querySelector('.content')
+
+                            const header = document.createElement('h2');
+                            header.innerHTML = movie.name;
+        
+                            const size = document.createElement('p');
+                            size.innerHTML = movie.size;
+        
+                            view.appendChild(header);
+                            view.appendChild(size)
+                        })
+
+                
+                } 
+                );
+            })
+    </script>
+</html>
