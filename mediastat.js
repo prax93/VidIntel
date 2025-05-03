@@ -13,7 +13,6 @@ export default {
     getVideoMetaData
 };
 
-// Feat: Activat Scheduler when env Variable is set
 async function readMediaInfos(filePath) {
     try {
         await fileExporter(filePath);
@@ -43,9 +42,11 @@ async function videoReader() {
     await Promise.all(videoFiles.map(async (videoPath) => {
         try {
             const info = await ffprobe(videoPath, { path: ffprobeStatic.path });
+            const videoFile = videoPath.split("/");
             const mediaInfo = {
-                "name": videoPath,
-                "size": (fs.statSync(videoPath).size / 1024 / 1024 / 1024).toFixed(2),
+                "name": videoFile[videoFile.length - 1],
+                "path": videoPath,
+                "size": (fs.statSync(videoPath).size / 1024 / 1024 / 1024).toFixed(2) + " GB",
                 "resolution": info.streams.find(stream => stream.codec_type === 'video').width + "x" + info.streams.find(stream => stream.codec_type === 'video').height,
                 "aspect-ratio": info.streams.find(stream => stream.codec_type === 'video').display_aspect_ratio,
                 "codec": info.streams.find(stream => stream.codec_type === 'video').codec_long_name,
