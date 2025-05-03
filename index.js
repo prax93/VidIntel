@@ -13,6 +13,8 @@ if(CRON_ENABLED === 'true'){
 
 
 async function handler(req, res) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
     const requestUrl = req.url;
     const current_url = new URL(req.url, `http://${req.headers.host}`);
     const search_params = current_url.searchParams;
