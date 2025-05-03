@@ -29,11 +29,11 @@ async function fileExporter(filePath) {
     files.forEach(file => {
         const fullPath = path.join(filePath, file);
         const fileStat = fs.statSync(fullPath);
-        if (fileStat.isFile() && videoExtensions.includes(path.extname(file).toLowerCase())) {
+        if ((fileStat.isFile() && videoExtensions.includes(path.extname(file).toLowerCase()))) {
             videoFiles.push(fullPath);
         }
-        else {
-            console.info(`%s: is not a valid media file`, file)
+        else if (!(fileStat.isFile() && videoExtensions.includes(path.extname(file).toLowerCase())) && !fileStat.isDirectory()) {
+            console.info(`%s: is not a valid media file`, file);
         }
     });
 }
