@@ -5,13 +5,13 @@ import cron from './cron.js'
 
 const SERVER_PORT = process.env.SERVER_PORT
 const CRON_ENABLED = process.env.CRON_ENABLED
+const CRON_SCHEDULE = process.env.CRON_SCHEDULE
+
 const server = createServer(handler)
 
 if(CRON_ENABLED === 'true'){
-    cron.cron(true, '00 13 * * *')
+    cron.cron(true, CRON_SCHEDULE.toString())
 }
-
-
 async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
 
@@ -68,9 +68,6 @@ async function handler(req, res) {
         }
     }
 }
-
-//Feat: Add Scheduled Job on mediastat.readMediaInfo when Env variable is set
-
 
 server.listen(SERVER_PORT, '127.0.0.1', () => {
   console.info('Listening on http://127.0.0.1:' + SERVER_PORT);
