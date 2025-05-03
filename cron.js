@@ -1,7 +1,6 @@
 import { CronJob } from 'cron';
 import mediastat from './mediastat.js';
 
-
 export default {
     cron: cronStart
 }
@@ -21,9 +20,10 @@ function cronStart(boolean, cronSchedule) {
             }
         }, // onTick
         function() {
-            console.log('cronjob finished');
+            const logDate = new Date().toISOString();
+            console.log(`${logDate} Cronjob finished`);
         },
-        boolean, // start
+        boolean, // Start
         'Europe/Zurich' // timeZone
     )
 }
