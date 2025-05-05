@@ -19,7 +19,7 @@
     <script>
         const inputs = document.querySelector(".inputType");
 
-        inputs.addEventListener('keydown', (event) => { 
+        inputs.addEventListener('input', (event) => { 
                 console.log(event.target.value);
                 fetch(`http://localhost:3000/?search=${event.target.value}`, {
                     method: 'GET'
