@@ -10,7 +10,7 @@ const CRON_SCHEDULE = process.env.CRON_SCHEDULE
 const server = createServer(handler)
 
 if(CRON_ENABLED === 'true'){
-    cron.cron(true, CRON_SCHEDULE.toString())
+    cron.generateJSON(true, CRON_SCHEDULE !== undefined ? CRON_SCHEDULE.toString(): '0 0 * * 7')
 }
 async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -50,9 +50,7 @@ async function handler(req, res) {
             const logDate = new Date().toISOString();
             console.info(`${logDate} Sync Started`);
             try {
-                const logDate = new Date().toISOString();
                 await mediastat.readMediaInfos(process.env.MEDIA_LOCATION);
-                console.info(`${logDate} Sync Finished sucessfully`);
                 res.statusCode = 200;
                 res.end(JSON.stringify({
                     Status: 'Sync Finished',
