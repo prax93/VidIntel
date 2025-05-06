@@ -39,6 +39,7 @@ async function fileExporter(filePath) {
 }
 
 async function videoReader() {
+    console.info(`${new Date().toISOString()} Media Sync Started`);
     await Promise.all(videoFiles.map(async (videoPath) => {
         try {
             const info = await ffprobe(videoPath, { path: ffprobeStatic.path });
@@ -66,6 +67,8 @@ async function videoReader() {
         }
     }));
     jsonCreator.writer('./movies.json', JSON.stringify(movies));
+    console.info(`${new Date().toISOString()} Media Sync Finished sucessfully`);
+
 }
 
 function getVideoMetaData() {
