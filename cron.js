@@ -2,7 +2,7 @@ import { CronJob } from 'cron';
 import mediastat from './mediastat.js';
 
 export default {
-    cron: cronStart
+    generateJSON: cronStart
 }
 
 function cronStart(boolean, cronSchedule) {
@@ -10,18 +10,14 @@ function cronStart(boolean, cronSchedule) {
         cronSchedule, // cronTime
         async function () {
             try {
-                const logDate = new Date().toISOString();
+                console.info(`${new Date().toISOString()} CronJob Started`);
                 await mediastat.readMediaInfos(process.env.MEDIA_LOCATION);
-                console.info(`${logDate} Sync Finished sucessfully`);
-                cronjob.stop()
+                console.info(`${new Date().toISOString()} Cronjob Finished sucessfully`);
             } 
             catch (err) {
+                console.error(`${new Date().toISOString()} Cronjob Halted: ${err.message}`);
                 throw new Error(err)
             }
-        }, // onTick
-        function() {
-            const logDate = new Date().toISOString();
-            console.log(`${logDate} Cronjob finished`);
         },
         boolean, // Start
         'Europe/Zurich' // timeZone
