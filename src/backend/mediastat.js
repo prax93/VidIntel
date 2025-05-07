@@ -1,5 +1,5 @@
 import ffprobe from 'ffprobe';
-import ffprobeStatic from 'ffprobe-static';
+import ffprobePath from 'ffmpeg-ffprobe-static';
 import fs from 'node:fs';
 import path from 'node:path';
 import jsonCreator from './jsonCreator.js';
@@ -40,32 +40,35 @@ async function fileExporter(filePath) {
 
 async function videoReader() {
     console.info(`${new Date().toISOString()} Media Sync Started`);
-    await Promise.all(videoFiles.map(async (videoPath) => {
+    for (const videoPath of videoFiles) {
         try {
-            const info = await ffprobe(videoPath, { path: ffprobeStatic.path });
-            const videoFile = videoPath.split("/");
-            const mediaInfo = {
-                "name": videoFile[videoFile.length - 1],
-                "path": videoPath,
-                "size": (fs.statSync(videoPath).size / 1024 / 1024 / 1024).toFixed(2) + " GB",
-                "resolution": info.streams.find(stream => stream.codec_type === 'video').width + "x" + info.streams.find(stream => stream.codec_type === 'video').height,
-                "aspect-ratio": info.streams.find(stream => stream.codec_type === 'video').display_aspect_ratio,
-                "codec": info.streams.find(stream => stream.codec_type === 'video').codec_long_name,
-                "audio": info.streams
-                    .filter(stream => stream.codec_type === 'audio')
-                    .map(audio => ({
-                        "language": audio.tags?.language? audio.tags.language : 'und',
-                        "channels": audio.channels,
-                        "channelsLayout": audio.channel_layout,
-                        "codec": audio.codec_name,
-                        "profile": audio.profile
+            const info = await ffprobe(videoPath, { path: ffprobePath.ffprobePath });
+            if (info) {
+                const videoFile = path.basename(videoPath);
+                const videoStream = info.streams.find(stream => stream.codec_type === 'video');
+                const audioStreams = info.streams.filter(stream => stream.codec_type === 'audio');
+
+                const mediaInfo = {
+                    name: videoFile,
+                    path: videoPath,
+                    size: `${(fs.statSync(videoPath).size / 1024 / 1024 / 1024).toFixed(2)} GB`,
+                    resolution: videoStream ? `${videoStream.width}x${videoStream.height}` : 'Unknown',
+                    aspectRatio: videoStream?.display_aspect_ratio || 'Unknown',
+                    codec: videoStream?.codec_long_name || 'Unknown',
+                    audio: audioStreams.map(audio => ({
+                        language: audio.tags?.language || 'und',
+                        channels: audio.channels || 'Unknown',
+                        channelsLayout: audio.channel_layout || 'Unknown',
+                        codec: audio.codec_name || 'Unknown',
+                        profile: audio.profile || 'Unknown'
                     }))
-            };
-            movies.push(mediaInfo);
+                };
+                movies.push(mediaInfo);
+            }
         } catch (err) {
-            console.warn(err);
+            console.warn(`Error processing ${videoPath}:`, err.message);
         }
-    }));
+    }
     jsonCreator.writer('./movies.json', JSON.stringify(movies));
     console.info(`${new Date().toISOString()} Media Sync Finished sucessfully`);
 

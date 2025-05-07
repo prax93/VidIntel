@@ -52,8 +52,6 @@ A lightweight HTTP backend server built with Node.js to manage basic tasks on a 
     - Copy `.env.example` to `.env` and update the values.
     Example `.env` file:
     ```plaintext
-    SERVER_PORT=3000
-    MEDIA_LOCATION=./videos
     CRON_ENABLED=true
     CRON_SCHEDULE='0 0 * * 7'
     ```

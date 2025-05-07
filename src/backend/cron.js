@@ -11,7 +11,7 @@ function cronStart(boolean, cronSchedule) {
         async function () {
             try {
                 console.info(`${new Date().toISOString()} CronJob Started`);
-                await mediastat.readMediaInfos(process.env.MEDIA_LOCATION);
+                await mediastat.readMediaInfos('/movies');
                 console.info(`${new Date().toISOString()} Cronjob Finished sucessfully`);
             } 
             catch (err) {

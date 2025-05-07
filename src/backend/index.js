@@ -3,7 +3,6 @@ import mediastat from './mediastat.js';
 import jsonCreator from './jsonCreator.js';
 import cron from './cron.js'
 
-const SERVER_PORT = process.env.SERVER_PORT
 const CRON_ENABLED = process.env.CRON_ENABLED
 const CRON_SCHEDULE = process.env.CRON_SCHEDULE
 
@@ -50,7 +49,7 @@ async function handler(req, res) {
             const logDate = new Date().toISOString();
             console.info(`${logDate} Sync Started`);
             try {
-                await mediastat.readMediaInfos(process.env.MEDIA_LOCATION);
+                mediastat.readMediaInfos('/movies');
                 res.statusCode = 200;
                 res.end(JSON.stringify({
                     Status: 'Sync Finished',
@@ -67,6 +66,6 @@ async function handler(req, res) {
     }
 }
 
-server.listen(SERVER_PORT, '127.0.0.1', () => {
-  console.info('Listening on http://127.0.0.1:' + SERVER_PORT);
+server.listen(3000, '0.0.0.0', () => {
+  console.info('Listening on http://127.0.0.1:' + 3000);
 });

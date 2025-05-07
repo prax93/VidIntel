@@ -17,7 +17,8 @@ function writer(jsonFile, jsonData){
 function reader(filePath, callback) {
     fs.readFile(filePath, (err, data) => {
         if (err) {
-            return callback(err, null);
+            console.error(err)
+            return null
         }
         callback(null, data);
     });
