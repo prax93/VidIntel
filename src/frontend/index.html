@@ -45,8 +45,10 @@
                             header.innerHTML = movie.name;
                             const size = document.createElement('p');
                             const codec = document.createElement('p');
+                            const resoultion = document.createElement('p');
 
                             codec.innerHTML = movie.codec
+                            resoultion.innerHTML = `${movie.resolution} (${movie.aspectRatio})`
 
                             const languageList = document.createElement('ul');
                             languageList.style.paddingLeft = '0px';
@@ -54,6 +56,7 @@
                             size.innerHTML = movie.size;
                             listItem.appendChild(header);
                             listItem.appendChild(size)
+                            listItem.appendChild(resoultion)
                             listItem.appendChild(codec)
                             listItem.appendChild(languageList)
 
