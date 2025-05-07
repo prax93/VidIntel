@@ -7,11 +7,13 @@ export default {
 }
 
 function writer(jsonFile, jsonData){
-    fs.writeFile(jsonFile, jsonData, (error) => {
-        if (error){
-            console.error(error)
+    fs.writeFile(jsonFile, JSON.stringify(jsonData, null, 2), 'utf8', (error) => {
+        if (error) {
+            console.error('Error writing file:', error);
+        } else {
+            console.log('File written successfully');
         }
-    })
+    });
 }
 
 function reader(filePath, callback) {
