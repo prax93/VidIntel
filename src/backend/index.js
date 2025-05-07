@@ -49,7 +49,7 @@ async function handler(req, res) {
             const logDate = new Date().toISOString();
             console.info(`${logDate} Sync Started`);
             try {
-                await mediastat.readMediaInfos('/movies');
+                mediastat.readMediaInfos('/movies');
                 res.statusCode = 200;
                 res.end(JSON.stringify({
                     Status: 'Sync Finished',
