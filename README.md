@@ -24,7 +24,7 @@ A lightweight HTTP backend server built with Node.js to manage basic tasks on a 
     ```bash
     docker run -d \
      --name vidintel \
-     -p 3000:3000 \
+     -p 3030:3030 \
      -p 80:80 \
      -e CRON_ENABLED="true" \
      -e CRON_SCHEDULE="35 11 * * *" \
