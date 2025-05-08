@@ -17,8 +17,18 @@
 
     <br>
     <form>
-        <input class="inputType" type="text" placeholder="Search:">
+        <input class="ipAdress" type="text" placeholder="Search:">
     </form>
+
+    <br>
+
+    <div></div>
+        <input class="ip" type="text" placeholder="Enter Backend IP Adress:">
+    </div>
+
+    <br>
+
+    <button class="clear">Clear Localstorage</button>
 
     <div class="content" style="width: 100%; display: flex; justify-content: center;">
         <ul class="movieList" style="padding-left: 0; text-align: left;"></ul>
@@ -26,11 +36,32 @@
     </div>
 
     <script>
-        const inputs = document.querySelector(".inputType");
+        const inputs = document.querySelector(".ipAdress");
+        const ipAdress = document.querySelector(".ip");
+        const clearStorage = document.querySelector(".clear")
+
+        ipAdress.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                console.log('Webserver saved in cache:', event.target.value);
+                localStorage.setItem('webserver', event.target.value)
+                if(localStorage.getItem('webserver')) {
+                    ipAdress.style.display = 'none'
+                }
+            }
+        });
+
+        clearStorage.addEventListener('click', (event) => {
+            event.preventDefault()
+            localStorage.clear();
+            ipAdress.style.display = 'block'
+        })
+
 
         inputs.addEventListener('input', (event) => { 
                 console.log(event.target.value);
-                fetch(`http://localhost:3030/?search=${event.target.value}`, {
+                
+                fetch(`http://${localStorage.getItem('webserver')}:3030/?search=${event.target.value}`, {
                     method: 'GET'
                 })
                 .then(resp => { return resp.json()})
@@ -68,12 +99,13 @@
                                 audioInfo.appendChild(language)
                                 languageList.appendChild(audioInfo)
                             })
-
-
                             view.appendChild(listItem)
-                        })
-                } 
-                );
+                        })} 
+                )
+                .catch(err => {
+                    console.log(err)
+                    document.querySelector('.movieList').innerHTML = `Error: ${err.message}`
+                }) 
             })
     </script>
 </body>
