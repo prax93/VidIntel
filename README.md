@@ -1,4 +1,4 @@
-# VideIntel
+# VidIntel
 
 A lightweight HTTP backend server built with Node.js to manage basic tasks on a Linux server. This project includes functionality for retrieving and managing video metadata, searching for movies, and scheduling periodic tasks using cron jobs.
 
