@@ -30,7 +30,7 @@
 
         inputs.addEventListener('input', (event) => { 
                 console.log(event.target.value);
-                fetch(`http://localhost:3000/?search=${event.target.value}`, {
+                fetch(`http://localhost:3030/?search=${event.target.value}`, {
                     method: 'GET'
                 })
                 .then(resp => { return resp.json()})
