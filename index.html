@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <title>Movie Finder</title>
+</head>
+<body style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-family:roboto">
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <img src="https://www.shutterstock.com/image-vector/film-clapper-3d-cartoon-icon-600nw-2239181291.jpg" alt="" srcset="" width="4%">
+        <h1 style="margin-left: 10px;">Movie Metadata Retriever</h1>
+    </div>
+
+    <br>
+    <form>
+        <input class="inputType" type="text" placeholder="Search:">
+    </form>
+
+    <div class="content" style="width: 100%; display: flex; justify-content: center;">
+        <ul class="movieList" style="padding-left: 0; text-align: left;"></ul>
+        </ul>
+    </div>
+
+    <script>
+        const inputs = document.querySelector(".inputType");
+
+        inputs.addEventListener('input', (event) => { 
+                console.log(event.target.value);
+                fetch(`http://localhost:3030/?search=${event.target.value}`, {
+                    method: 'GET'
+                })
+                .then(resp => { return resp.json()})
+                .then((data) => {
+                    document.querySelector('.movieList').innerHTML = ''
+                        data.forEach((movie) => {
+                            const listItem = document.createElement('li');
+                            listItem.style.listStyle = 'none'
+                            listItem.style.textAlign = 'center'
+                            const view = document.querySelector('.movieList')
+                            const header = document.createElement('h2');
+                            header.innerHTML = movie.name;
+                            const size = document.createElement('p');
+                            const codec = document.createElement('p');
+
+                            codec.innerHTML = movie.codec
+
+                            const languageList = document.createElement('ul');
+                            languageList.style.paddingLeft = '0px';
+
+                            size.innerHTML = movie.size;
+                            listItem.appendChild(header);
+                            listItem.appendChild(size)
+                            listItem.appendChild(codec)
+                            listItem.appendChild(languageList)
+
+                            movie.audio.forEach((audio) => {
+                                const audioInfo = document.createElement('li')
+                                audioInfo.style.listStyle = 'none'
+                                const language = document.createElement('p')
+                                language.innerHTML = `${audio.language}: ${audio.channels}`
+                                audioInfo.appendChild(language)
+                                languageList.appendChild(audioInfo)
+                            })
+
+
+                            view.appendChild(listItem)
+                        })
+                } 
+                );
+            })
+    </script>
+</body>
