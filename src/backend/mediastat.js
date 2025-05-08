@@ -71,6 +71,7 @@ async function videoReader() {
     }
     jsonCreator.writer('./movies.json', JSON.stringify(movies));
     videoFiles = []
+    movies = []
     console.info(`${new Date().toISOString()} Media Sync Finished sucessfully`);
 
 }
