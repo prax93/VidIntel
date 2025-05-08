@@ -20,6 +20,6 @@ function cronStart(boolean, cronSchedule) {
             }
         },
         boolean, // Start
-        'Europe/Zurich' // timeZone
+        'system' // timeZone
     )
 }
