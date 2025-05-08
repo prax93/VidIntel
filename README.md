@@ -1,4 +1,4 @@
-# HomeServer Backend Management
+# VideIntel
 
 A lightweight HTTP backend server built with Node.js to manage basic tasks on a Linux server. This project includes functionality for retrieving and managing video metadata, searching for movies, and scheduling periodic tasks using cron jobs.
 
@@ -39,14 +39,14 @@ A lightweight HTTP backend server built with Node.js to manage basic tasks on a 
 4. Run Docker Container:
     ```bash
     docker run -d \
-     --name videoreader \
+     --name vidintel \
      -p 3000:3000 \
      -p 80:80 \
      -e CRON_ENABLED="true" \
      -e CRON_SCHEDULE="35 11 * * *" \
      -e TZ="Europe/Zurich" \
      -v ~/Downloads:/movies:ro \
-    videoreader:latest
+    prax93/vidintel:latest
     ```
 ---
 
