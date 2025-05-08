@@ -3,40 +3,24 @@
 A lightweight HTTP backend server built with Node.js to manage basic tasks on a Linux server. This project includes functionality for retrieving and managing video metadata, searching for movies, and scheduling periodic tasks using cron jobs.
 
 ---
-
 ## Features
 
 - **Video Metadata Retrieval**: Extracts detailed metadata (e.g., resolution, codec, audio details) from video files using `ffprobe`.
 - **Movie Search**: Provides a search API to filter movies by name.
 - **Cron Job Integration**: Automates periodic tasks like refreshing video metadata.
 - **Cross-Origin Support**: Allows requests from any origin with CORS headers.
-
 ---
 
 ## Project Structure
-
 - `src/index.js`: Entry point of the server application.
 - `src/mediastat.js`: Module for extracting video metadata using `ffprobe`.
 - `src/jsonCreator.js`: Utility for managing JSON data storage and retrieval.
 - `src/cron.js`: Scheduler for automating periodic tasks with cron jobs.
 - `public/index.html`: Simple frontend interface for movie search functionality.
-
 ---
 
 ## Installation
-
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/prax93/homeserver-mgmt-backend.git
-    cd homeserver-mgmt-backend
-    ```
-
-2. Docker build:
-    ```bash
-    docker build . -t videoreader:latest
-    ```
-
-4. Run Docker Container:
+1. Run Docker Container:
     ```bash
     docker run -d \
      --name vidintel \
@@ -65,16 +49,7 @@ A lightweight HTTP backend server built with Node.js to manage basic tasks on a 
 
 ---
 
-### Debugging
-
-The project includes a VS Code launch configuration (`.vscode/launch.json`) for debugging. To debug:
-
-1. Open the project in VS Code.
-2. Press `F5` to start debugging.
-
----
-
-## Dependencies
+## Node Dependencies
 
 - `cron`: For scheduling periodic tasks.
 - `ffprobe`: For extracting video metadata.
