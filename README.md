@@ -15,23 +15,11 @@ A lightweight HTTP backend server built with Node.js to manage basic tasks on a 
 
 ## Project Structure
 
-- `index.js`: Main server file.
-- `mediastat.js`: Handles video metadata extraction.
-- `jsonCreator.js`: Reads and writes JSON files.
-- `cron.js`: Manages cron job scheduling.
-- `index.html`: Frontend for searching movies.
-
----
-
-## Technologies Used
-- **Programming Language**: Node.js
----
-
-## Prerequisites
-
-- Node.js (v16 or later)
-- `ffprobe` installed (via `ffprobe-static` dependency)
-- `cron`
+- `src/index.js`: Entry point of the server application.
+- `src/mediastat.js`: Module for extracting video metadata using `ffprobe`.
+- `src/jsonCreator.js`: Utility for managing JSON data storage and retrieval.
+- `src/cron.js`: Scheduler for automating periodic tasks with cron jobs.
+- `public/index.html`: Simple frontend interface for movie search functionality.
 
 ---
 
@@ -43,24 +31,23 @@ A lightweight HTTP backend server built with Node.js to manage basic tasks on a 
     cd homeserver-mgmt-backend
     ```
 
-2. Install dependencies:
+2. Docker build:
     ```bash
-    npm install
+    docker build . -t videoreader:latest
     ```
 
-3. Configure environment variables:
-    - Copy `.env.example` to `.env` and update the values.
-    Example `.env` file:
-    ```plaintext
-    CRON_ENABLED=true
-    CRON_SCHEDULE='0 0 * * 7'
-    ```
-
-4. Start the development server:
+4. Run Docker Container:
     ```bash
-    node --env-file ./.env index.js
+    docker run -d \
+     --name videoreader \
+     -p 3000:3000 \
+     -p 80:80 \
+     -e CRON_ENABLED="true" \
+     -e CRON_SCHEDULE="35 11 * * *" \
+     -e TZ="Europe/Zurich" \
+     -v ~/Downloads:/movies:ro \
+    videoreader:latest
     ```
-
 ---
 
 ## API Documentation
@@ -77,21 +64,6 @@ A lightweight HTTP backend server built with Node.js to manage basic tasks on a 
 - **Description**: Refreshes the video metadata by scanning the `MEDIA_LOCATION` directory and creates a new local JSON File.
 
 ---
-
-## Cron Job
-
-If `CRON_ENABLED` is set to `true`, a cron job will periodically refresh the video metadata based on the `CRON_SCHEDULE`environment variable.
-If CRON_SCHEDULE is not defined the Cronjob runs every Sunday on 00:00
-
----
-
-## Frontend
-
-The project includes a simple HTML frontend (`index.html`) for searching movies. Open the file in a browser and use the search bar to query the backend.
-
----
-
-## Development
 
 ### Debugging
 
@@ -110,24 +82,8 @@ The project includes a VS Code launch configuration (`.vscode/launch.json`) for 
 
 ---
 
-## License
-
-This project is licensed under the ISC License. See the `LICENSE` file for details.
-
----
-
 ## Author
 
 Created by **prax93**.
 
 ---
-
-## Contributing
-
-Contributions are welcome! Feel free to open issues or submit pull requests.
-
----
-
-## Issues
-
-If you encounter any issues, please report them [here](https://github.com/prax93/homeserver-mgmt-backend/issues).
