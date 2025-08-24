@@ -61,7 +61,7 @@
         inputs.addEventListener('input', (event) => { 
                 console.log(event.target.value);
                 
-                fetch(`http://${localStorage.getItem('webserver')}:3030/?search=${event.target.value}`, {
+                fetch(`http://${localStorage.getItem('webserver')}/?search=${event.target.value}`, {
                     method: 'GET'
                 })
                 .then(resp => { return resp.json()})
