@@ -7,7 +7,7 @@ RUN apt update && apt install -y nginx curl  tzdata && \
 WORKDIR /app
 COPY ./src/backend/* /app
 
-RUN npm install --loglevel verbose
+RUN npm install
 
 COPY ./src/frontend/index.html /var/www/html/
 
